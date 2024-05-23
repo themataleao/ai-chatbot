@@ -146,6 +146,11 @@ async function submitUserMessage(content: string) {
     provider: openai,
     initial: <SpinnerMessage />,
     messages: [
+      ...aiState.get().messages.map((message: any) => ({
+        role: message.role,
+        content: message.content,
+        name: message.name
+      })),
       {
         role: 'system',
         content: `\
@@ -163,12 +168,7 @@ If you want to show events, call \`get_events\`.
 If the user wants to sell stock, or complete another impossible task, respond that you are a demo and cannot do that.
 
 Besides that, you can also chat with users and do some calculations if needed.`
-      },
-      ...aiState.get().messages.map((message: any) => ({
-        role: message.role,
-        content: message.content,
-        name: message.name
-      }))
+      }
     ],
     text: ({ content, done, delta }) => {
       if (!textStream) {
